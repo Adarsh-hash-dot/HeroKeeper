@@ -16,6 +16,7 @@ async function getHeros() {
       herosContainer.innerHTML = `<div class="is-size-1 has-text-danger-light m-auto">Search For Heros</div>`;
       return 
     }
+    herosContainer.innerHTML = `<div class="lds-ellipsis m-auto"><div></div><div></div><div></div><div></div></div>`
     const response = await fetch(
         `https://gateway.marvel.com:443/v1/public/characters?nameStartsWith=${query}&apikey=${publicKey}&hash=${hash}&ts=1`
     ).then(async (res) => await res.json());
@@ -31,14 +32,24 @@ async function getHeros() {
             data.thumbnail.path +
             "/portrait_medium." +
             data.thumbnail.extension;
-        allCards += getHtmlCard(url, data.name, data.description);
+        allCards += getHtmlCard(url, data.name, data.description, data.id);
     });
+    console.log(dataArray)
     console.log(query)
 
     herosContainer.innerHTML = allCards;
+
+    dataArray.forEach((data)=>{
+      const favButton = document.getElementById(`fav-${data.id}`)
+      const infoButton = document.getElementById(`info-${data.id}`)
+      favButton.addEventListener('click', () => {handleFav(data)})
+      infoButton.addEventListener('click', ()=>{handleInfo(data)})
+    })
 }
 
-function getHtmlCard(url, name, description) {
+
+
+function getHtmlCard(url, name, description, id) {
     const card = `<div class="column is-one-third"><div class="card">
     <div class="card-image">
       <figure class="image is-4by3">
@@ -52,20 +63,39 @@ function getHtmlCard(url, name, description) {
             <img src="${url}" alt="">
           </figure>
         </div>
-        <div class="media-content">
+        <div class="media-content is-flex is-justify-content-space-between">
+          <div>
           <p class="title is-4">${name}</p>
           <p class="subtitle is-6">@${name}</p>
+          </div>
+          <div>
+            <button id="fav-${id}" class="button is-danger">	&hearts;</button>
+          </div>
         </div>
+      </div>
+      <div class="buttons is-flex is-justify-content-flex-end">
+          <button id="info-${id}" class="button is-info is-light">More Info</button>
+        
       </div>
 
       <div class="content mt-3">
-        ${description == "" ? "No discription available" : discription }
+        ${description == "" ? "A Mystery Hero. Information is not available. " : description }
       </div>
     </div>
     </div>
     </div>`;
 
     return card;
+}
+
+function handleFav(data) {
+  localStorage.setItem(data.id,JSON.stringify(data))
+  alert("Hero is added to Favorite!")
+}
+
+function handleInfo(data) {
+  localStorage.setItem('heroInfo', JSON.stringify(data));
+  window.location.href = './hero.html'
 }
 
 inputElement.oninput = getHeros
