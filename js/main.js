@@ -98,6 +98,8 @@ function handleInfo(data) {
   window.location.href = './hero.html'
 }
 
+
+//this method calls fetches heros every thime user inputs
 inputElement.oninput = getHeros
 
 
