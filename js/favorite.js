@@ -2,7 +2,7 @@ async function getHeros() {
   const herosContainer = document.getElementById("heroList")
   allCards = ``
    for (let i = 0; i < localStorage.length; i++){
-      if (localStorage.key(i) == "heroInfo") {
+      if (localStorage.key(i) == "heroInfo" || localStorage.key(i).length != 7) {
         continue
       }
       const data = JSON.parse(localStorage.getItem(localStorage.key(i))) 
@@ -21,7 +21,7 @@ async function getHeros() {
 
 
   for (let i = 0; i < localStorage.length; i++){
-    if (localStorage.key(i) == "heroInfo") {
+    if (localStorage.key(i) == "heroInfo" || localStorage.key(i).length != 7) {
       continue
     }
     const data = JSON.parse(localStorage.getItem(localStorage.key(i))) 
